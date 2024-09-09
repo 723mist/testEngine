@@ -38,8 +38,8 @@ namespace Smile_Engine_2D
                     DataPrjFile.Write(now.ToString("yyyy-MM-dd hh:mm:ss"));
                     DataPrjFile.Close();
 
-                    openFile OpenProject = new openFile();
-                    OpenProject.Show();
+                    CreateProject CreateProject = new CreateProject();
+                    CreateProject.Show();
                 }
                 catch
                 {

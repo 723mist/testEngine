@@ -40,15 +40,16 @@
             // create
             // 
             this.create.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.create.BackColor = System.Drawing.Color.Gray;
+            this.create.BackColor = System.Drawing.Color.LightSteelBlue;
             this.create.CausesValidation = false;
-            this.create.Font = new System.Drawing.Font("Poppins", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.create.ForeColor = System.Drawing.SystemColors.Control;
-            this.create.Location = new System.Drawing.Point(393, 12);
+            this.create.FlatAppearance.BorderSize = 0;
+            this.create.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.create.Font = new System.Drawing.Font("Poppins", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.create.ForeColor = System.Drawing.Color.Black;
+            this.create.Location = new System.Drawing.Point(447, 12);
             this.create.Name = "create";
-            this.create.Size = new System.Drawing.Size(104, 28);
+            this.create.Size = new System.Drawing.Size(30, 28);
             this.create.TabIndex = 1;
-            this.create.Text = "New Project";
             this.create.UseVisualStyleBackColor = false;
             this.create.Click += new System.EventHandler(this.button1_Click_1);
             // 
@@ -60,7 +61,7 @@
             this.panel1.Controls.Add(this.closeinengine);
             this.panel1.Location = new System.Drawing.Point(-13, -12);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(215, 674);
+            this.panel1.Size = new System.Drawing.Size(215, 645);
             this.panel1.TabIndex = 5;
             // 
             // closeinengine
@@ -71,7 +72,7 @@
             this.closeinengine.CausesValidation = false;
             this.closeinengine.Font = new System.Drawing.Font("Poppins", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.closeinengine.ForeColor = System.Drawing.Color.GhostWhite;
-            this.closeinengine.Location = new System.Drawing.Point(27, 613);
+            this.closeinengine.Location = new System.Drawing.Point(27, 584);
             this.closeinengine.Name = "closeinengine";
             this.closeinengine.Size = new System.Drawing.Size(185, 27);
             this.closeinengine.TabIndex = 1;
@@ -87,18 +88,20 @@
             this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(58)))), ((int)(((byte)(58)))));
             this.panel2.Location = new System.Drawing.Point(-13, 46);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(538, 616);
+            this.panel2.Size = new System.Drawing.Size(518, 587);
             this.panel2.TabIndex = 6;
             this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             // 
             // open
             // 
             this.open.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.open.Location = new System.Drawing.Point(359, 12);
+            this.open.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.open.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.open.Location = new System.Drawing.Point(208, 12);
             this.open.Name = "open";
-            this.open.Size = new System.Drawing.Size(28, 27);
+            this.open.Size = new System.Drawing.Size(233, 28);
             this.open.TabIndex = 7;
-            this.open.UseVisualStyleBackColor = true;
+            this.open.UseVisualStyleBackColor = false;
             this.open.Click += new System.EventHandler(this.open_Click);
             // 
             // window
@@ -106,7 +109,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.ClientSize = new System.Drawing.Size(509, 640);
+            this.ClientSize = new System.Drawing.Size(489, 611);
             this.Controls.Add(this.open);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.create);
@@ -115,8 +118,11 @@
             this.DoubleBuffered = true;
             this.HelpButton = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximumSize = new System.Drawing.Size(622, 759);
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(505, 650);
             this.Name = "window";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Smile Dashboard";
             this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.Load += new System.EventHandler(this.window_Load);
