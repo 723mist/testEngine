@@ -13,6 +13,7 @@ namespace Smile_Engine_2D
 {
     public partial class window : Form
     {
+        
 
         public window()
         {
@@ -30,6 +31,8 @@ namespace Smile_Engine_2D
             {
                 try
                 {
+                    
+
                     DateTime now = DateTime.Now;
                     Console.WriteLine(now.ToString("yyyy-MM-dd hh:mm:ss"));
 
