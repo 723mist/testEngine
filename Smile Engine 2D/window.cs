@@ -31,7 +31,7 @@ namespace Smile_Engine_2D
                 try
                 {
                     DateTime now = DateTime.Now;
-                    Console.WriteLine(now.ToString("yyyyyyyyy-MM-dd hh:mm:ss"));
+                    Console.WriteLine(now.ToString("yyyy-MM-dd hh:mm:ss"));
 
                     string pathFile = sfd.FileName;
                     BinaryWriter DataPrjFile = new BinaryWriter(File.Create(pathFile));
