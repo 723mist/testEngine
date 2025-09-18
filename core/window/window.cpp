@@ -37,9 +37,9 @@ int EngineWindow::Init(const char* title, int width, int height){
         double currentTime = glfwGetTime();
         if (currentTime - lastTime >= 0.2) {
             double fps = frames / (currentTime - lastTime);
-            std::string titleWithFPS = std::string(title) + " FPS: " + std::to_string((int)fps);
+            std::string titleWithFPS = std::string(title) + " FPS: " + std::to_string(fps); // 60 fps != 60.000 std::to_string((int)fps)
             glfwSetWindowTitle(window, titleWithFPS.c_str());
-            std::cout << "FPS: " << (int)fps << std::endl;
+            std::cout << "FPS: " << fps << std::endl; // 60 fps != 60.000 (int)fps
             frames = 0;
             lastTime = currentTime;
         }
