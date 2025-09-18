@@ -1,0 +1,2200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📦 VotexMap Editor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+        }
+        
+        body.light-theme {
+            background-color: #ecf0f1;
+            color: #2c3e50;
+        }
+        
+        header {
+            background-color: #1a2530;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .light-theme header {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .toolbar {
+            background-color: #34495e;
+            padding: 8px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .light-theme .toolbar {
+            background-color: #2980b9;
+        }
+        
+        button {
+            padding: 8px 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button.active {
+            background-color: #e74c3c;
+        }
+        
+        .light-theme button {
+            background-color: #3498db;
+        }
+        
+        .light-theme button:hover {
+            background-color: #2980b9;
+        }
+        
+        .light-theme button.active {
+            background-color: #e74c3c;
+        }
+        
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .canvas-container {
+            flex: 3;
+            position: relative;
+            overflow: hidden;
+            background-color: #2c3e50;
+        }
+        
+        .light-theme .canvas-container {
+            background-color: #bdc3c7;
+        }
+        
+        #mapCanvas {
+            position: absolute;
+            background-color: #202020;
+        }
+        
+        .light-theme #mapCanvas {
+            background-color: #bdc3c7;
+        }
+        
+        .sidebar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 300px;
+            background-color: #34495e;
+            border-left: 1px solid #7f8c8d;
+        }
+        
+        .light-theme .sidebar {
+            background-color: #ecf0f1;
+            border-left: 1px solid #bdc3c7;
+        }
+        
+        .panel {
+            margin: 10px;
+            padding: 15px;
+            background-color: #2c3e50;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .light-theme .panel {
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .panel h3 {
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #7f8c8d;
+            color: #ecf0f1;
+        }
+        
+        .light-theme .panel h3 {
+            color: #2c3e50;
+            border-bottom: 1px solid #bdc3c7;
+        }
+        
+        .objects-list {
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid #7f8c8d;
+            border-radius: 4px;
+        }
+        
+        .light-theme .objects-list {
+            border: 1px solid #bdc3c7;
+        }
+        
+        .objects-list table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        
+        .objects-list th, .objects-list td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #7f8c8d;
+            color: #ecf0f1;
+        }
+        
+        .light-theme .objects-list th, 
+        .light-theme .objects-list td {
+            color: #2c3e50;
+            border-bottom: 1px solid #bdc3c7;
+        }
+        
+        .objects-list tr:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+        
+        .light-theme .objects-list tr:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .objects-list tr.selected {
+            background-color: #3498db;
+        }
+        
+        .light-theme .objects-list tr.selected {
+            background-color: #e3f2fd;
+        }
+        
+        .properties-form {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 10px;
+        }
+        
+        .properties-form label {
+            padding: 8px 0;
+            font-weight: bold;
+            color: #ecf0f1;
+        }
+        
+        .light-theme .properties-form label {
+            color: #2c3e50;
+        }
+        
+        .properties-form input {
+            padding: 8px;
+            border: 1px solid #7f8c8d;
+            border-radius: 4px;
+            background-color: #34495e;
+            color: #ecf0f1;
+        }
+        
+        .light-theme .properties-form input {
+            border: 1px solid #bdc3c7;
+            background-color: white;
+            color: #2c3e50;
+        }
+        
+        .properties-form input:disabled {
+            background-color: #2c3e50;
+            color: #7f8c8d;
+        }
+        
+        .light-theme .properties-form input:disabled {
+            background-color: #f5f5f5;
+            color: #bdc3c7;
+        }
+        
+        .status-bar {
+            padding: 8px 15px;
+            background-color: #34495e;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .light-theme .status-bar {
+            background-color: #2980b9;
+            color: white;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: #2c3e50;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+            max-width: 90%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .light-theme .modal-content {
+            background-color: white;
+        }
+        
+        .modal h2 {
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #7f8c8d;
+            color: #ecf0f1;
+        }
+        
+        .light-theme .modal h2 {
+            color: #2c3e50;
+            border-bottom: 1px solid #bdc3c7;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .grid-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: auto;
+        }
+        
+        .grid-controls label {
+            color: #ffffff;
+        }
+        
+        .light-theme .grid-controls label {
+            color: #2c3e50;
+        }
+        
+        .grid-controls input {
+            width: 60px;
+            padding: 4px;
+            border: 1px solid #7f8c8d;
+            border-radius: 4px;
+            background-color: #2c3e50;
+            color: #ffffff;
+        }
+        
+        .light-theme .grid-controls input {
+            border: 1px solid #bdc3c7;
+            background-color: white;
+            color: #2c3e50;
+        }
+        
+        .help-text {
+            font-size: 12px;
+            color: #95a5a6;
+            margin-top: 5px;
+        }
+        
+        .light-theme .help-text {
+            color: #7f8c8d;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: #2c3e50;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px;
+            background-color: #2ecc71;
+            color: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+        }
+        
+        .notification.error {
+            background-color: #e74c3c;
+        }
+        
+        .rotate-handle {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: #ff9900;
+            border-radius: 50%;
+            cursor: grab;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+        
+        .rotate-handle:active {
+            cursor: grabbing;
+        }
+        
+        .grid-snap-mode {
+            margin-left: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .grid-snap-mode select {
+            padding: 4px;
+            border: 1px solid #7f8c8d;
+            border-radius: 4px;
+            background-color: #2c3e50;
+            color: #e3f2fd;
+        }
+        
+        .light-theme .grid-snap-mode select {
+            border: 1px solid #bdc3c7;
+            background-color: white;
+            color: #2c3e50;
+        }
+
+        /* New styles for custom properties */
+        .custom-properties {
+            margin-top: 15px;
+            border-top: 1px solid #7f8c8d;
+            padding-top: 15px;
+        }
+        
+        .light-theme .custom-properties {
+            border-top: 1px solid #bdc3c7;
+        }
+        
+        .custom-properties-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .property-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr auto;
+            gap: 8px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+        
+        .property-row input {
+            padding: 6px;
+        }
+        
+        .remove-property {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .remove-property:hover {
+            background-color: #c0392b;
+        }
+        
+        .add-property {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 10px;
+            cursor: pointer;
+        }
+        
+        .add-property:hover {
+            background-color: #27ae60;
+        }
+        
+        /* Documentation modal styles */
+        .documentation-modal {
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .doc-section {
+            margin-bottom: 20px;
+        }
+        
+        .doc-section h3 {
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+        
+        .light-theme .doc-section h3 {
+            color: #2980b9;
+        }
+        
+        .doc-section ul {
+            padding-left: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .doc-section li {
+            margin-bottom: 5px;
+        }
+        
+        .doc-shortcut {
+            display: inline-block;
+            background-color: rgba(0,0,0,0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        .light-theme .doc-shortcut {
+            background-color: rgba(0,0,0,0.05);
+        }
+        
+        .doc-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        
+        .doc-table th, .doc-table td {
+            border: 1px solid #7f8c8d;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .light-theme .doc-table th, 
+        .light-theme .doc-table td {
+            border: 1px solid #bdc3c7;
+        }
+        
+        .doc-table th {
+            background-color: rgba(0,0,0,0.1);
+        }
+        
+        .light-theme .doc-table th {
+            background-color: rgba(0,0,0,0.05);
+        }
+        
+        /* Custom Properties Modal */
+        .custom-props-modal {
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+        }
+        
+        .custom-props-container {
+            max-height: 50vh;
+            overflow-y: auto;
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #7f8c8d;
+            border-radius: 4px;
+        }
+        
+        .light-theme .custom-props-container {
+            border: 1px solid #bdc3c7;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>📦 VotexMap Editor v0.4</h1>
+        <div>
+            <button id="newBtn">🆕 New</button>
+            <button id="openBtn">📂 Open</button>
+            <button id="saveBtn">💾 Save</button>
+            <button id="undoBtn" title="Undo (Ctrl+Z)">↩️ Undo</button>
+            <button id="redoBtn" title="Redo (Ctrl+Y)">↪️ Redo</button>
+            <button id="mapSettingsBtn">ℹ️ Map Settings</button>
+            <button id="themeToggleBtn">🎨 Dark/Light</button>
+            <button id="docBtn">📄 Documentation</button>
+        </div>
+    </header>
+    
+    <div class="toolbar">
+        <button id="selectBtn" class="active">➕ Select</button>
+        <button id="brushBtn">🖌️ Brush</button>
+        <button id="playerStartBtn">🎮 Player Start</button>
+        <button id="triggerBtn">🕹️ Trigger</button>
+        <button id="lightBtn">💡 Light</button>
+        <button id="propBtn">📦 Prop</button>
+        
+        <div class="grid-controls">
+            <label>
+                <input type="checkbox" id="snapToGridCheckbox" checked>
+                Snap to Grid
+            </label>
+            <label>
+                Grid Size:
+                <input type="number" id="gridSizeInput" value="64" min="1" max="500">
+            </label>
+        </div>
+        
+        <div class="grid-snap-mode">
+            <label>⌗ Snap Mode:</label>
+            <select id="gridSnapMode">
+                <option value="center">Center to Grid</option>
+                <option value="edge">Edge to Grid</option>
+            </select>
+        </div>
+        
+        <button id="zoomInBtn">➕ Zoom In</button>
+        <button id="zoomOutBtn">➖ Zoom Out</button>
+        <button id="resetViewBtn">🔎 Reset View</button>
+        <button id="deleteBtn" style="background-color: #f04b39;">🗑️ Delete Object</button>
+    </div>
+    
+    <div class="main-container">
+        <div class="canvas-container">
+            <canvas id="mapCanvas"></canvas>
+            <div id="rotateHandle" class="rotate-handle" style="display: none;"></div>
+        </div>
+        
+        <div class="sidebar">
+            <div class="panel">
+                <h3>Objects</h3>
+                <div class="objects-list">
+                    <table id="objectsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>X</th>
+                                <th>Y</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Objects will be listed here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <h3>Properties</h3>
+                <div class="properties-form">
+                    <label for="propId">ID:</label>
+                    <input type="text" id="propId" disabled>
+                    
+                    <label for="propType">Type:</label>
+                    <input type="text" id="propType" disabled>
+                    
+                    <label for="propX">X:</label>
+                    <input type="number" id="propX" step="0.1">
+                    
+                    <label for="propY">Y:</label>
+                    <input type="number" id="propY" step="0.1">
+                    
+                    <label for="propWidth">Width:</label>
+                    <input type="number" id="propWidth" step="0.1">
+                    
+                    <label for="propHeight">Height:</label>
+                    <input type="number" id="propHeight" step="0.1">
+                    
+                    <label for="propAngle">Angle:</label>
+                    <input type="number" id="propAngle" step="0.1" min="0" max="360">
+                    
+                    <div></div>
+                    <div class="help-text">Use mouse wheel to rotate objects</div>
+                </div>
+
+                <!-- Button to open custom properties modal -->
+                <button id="openCustomPropsBtn" class="add-property" style="margin-top: 15px; width: 100%;">Edit Custom Properties</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="status-bar">
+        <div>X: <span id="cursorX">0</span> | Y: <span id="cursorY">0</span> | Mode: <span id="modeDisplay">Select</span></div>
+        <div>Scale: <span id="scaleDisplay">100%</span> | Grid: <span id="gridSizeDisplay">64</span> | Snap: <span id="snapModeDisplay">Center</span></div>
+    </div>
+    
+    <div class="notification" id="notification">Operation completed successfully</div>
+    
+    <!-- Modals -->
+    <div class="modal" id="newMapModal">
+        <div class="modal-content">
+            <h2>Create New Map</h2>
+            <div class="properties-form">
+                <label for="newMapName">Name:</label>
+                <input type="text" id="newMapName" value="New Map for VE">
+                
+                <label for="newMapAuthor">Author:</label>
+                <input type="text" id="newMapAuthor" value="-">
+                
+                <label for="newMapDescription">Description:</label>
+                <input type="text" id="newMapDescription" value="-">
+            </div>
+            <div class="modal-buttons">
+                <button id="cancelNewMapBtn">Cancel</button>
+                <button id="confirmNewMapBtn">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="mapSettingsModal">
+        <div class="modal-content">
+            <h2>Map Settings</h2>
+            <div class="properties-form">
+                <label for="mapName">Name:</label>
+                <input type="text" id="mapName">
+
+                <label for="mapAuthor">Author:</label>
+                <input type="text" id="mapAuthor">
+
+                <label for="mapDescription">Description:</label>
+                <input type="text" id="mapDescription">
+
+                <label for="mapGridSize">Grid Size:</label>
+                <input type="number" id="mapGridSize" min="1" max="500">
+            </div>
+            <div class="modal-buttons">
+                <button id="cancelMapSettingsBtn">Cancel</button>
+                <button id="confirmMapSettingsBtn">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Properties Modal -->
+    <div class="modal" id="customPropsModal">
+        <div class="modal-content custom-props-modal">
+            <h2>Custom Properties</h2>
+            <div class="custom-props-container" id="customPropertiesContainer">
+                <!-- Custom properties will be added here -->
+            </div>
+            <div class="custom-properties-header">
+                <button id="addPropertyBtn" class="add-property">+ Add Property</button>
+            </div>
+            <div class="modal-buttons">
+                <button id="cancelCustomPropsBtn">Cancel</button>
+                <button id="saveCustomPropsBtn">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Documentation Modal -->
+    <div class="modal" id="documentationModal">
+        <div class="modal-content documentation-modal">
+            <h2>VotexMap Editor Documentation</h2>
+            
+            <div class="doc-section">
+                <h3>Overview</h3>
+                <p>VotexMap Editor is a tool for creating maps for Votex Engine. It allows you to place and configure various objects including brushes, player start positions, triggers, lights, and props.</p>
+            </div>
+            
+            <div class="doc-section">
+                <h3>Tools</h3>
+                <table class="doc-table">
+                    <tr>
+                        <th>Tool</th>
+                        <th>Description</th>
+                        <th>Shortcut</th>
+                    </tr>
+                    <tr>
+                        <td>Select</td>
+                        <td>Select and manipulate objects</td>
+                        <td>Q</td>
+                    </tr>
+                    <tr>
+                        <td>Brush</td>
+                        <td>Create solid geometry (walls, floors)</td>
+                        <td>B</td>
+                    </tr>
+                    <tr>
+                        <td>Player Start</td>
+                        <td>Place player spawn point</td>
+                        <td>P</td>
+                    </tr>
+                    <tr>
+                        <td>Trigger</td>
+                        <td>Create interactive triggers</td>
+                        <td>T</td>
+                    </tr>
+                    <tr>
+                        <td>Light</td>
+                        <td>Place light sources</td>
+                        <td>L</td>
+                    </tr>
+                    <tr>
+                        <td>Prop</td>
+                        <td>Place decorative objects</td>
+                        <td>O</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="doc-section">
+                <h3>Controls</h3>
+                <ul>
+                    <li><span class="doc-shortcut">Left Click</span> - Place/Select object</li>
+                    <li><span class="doc-shortcut">Right Click + Drag</span> - Pan view</li>
+                    <li><span class="doc-shortcut">Mouse Wheel</span> - Zoom in/out</li>
+                    <li><span class="doc-shortcut">Ctrl + Mouse Wheel</span> - Rotate selected object</li>
+                    <li><span class="doc-shortcut">Delete</span> - Delete selected object</li>
+                    <li><span class="doc-shortcut">G</span> - Toggle grid snapping</li>
+                    <li><span class="doc-shortcut">Arrow Keys</span> - Nudge selected object</li>
+                    <li><span class="doc-shortcut">Ctrl+Z</span> - Undo</li>
+                    <li><span class="doc-shortcut">Ctrl+Y</span> - Redo</li>
+                    <li><span class="doc-shortcut">Escape</span> - Cancel current action</li>
+                </ul>
+            </div>
+            
+            <div class="doc-section">
+                <h3>Object Properties</h3>
+                <p>All objects have standard properties like position, size, and rotation. You can also add custom properties to any object:</p>
+                <ul>
+                    <li>Click the <strong>Edit Custom Properties</strong> button in the Properties panel</li>
+                    <li>Enter a property name (key) and value</li>
+                    <li>Use the trash icon to remove properties</li>
+                    <li>Custom properties are automatically saved with your map</li>
+                </ul>
+            </div>
+            
+            <div class="doc-section">
+                <h3>File Format</h3>
+                <p>Maps are saved in JSON format with .vme extension. The format includes:</p>
+                <ul>
+                    <li>Map metadata (name, author, description)</li>
+                    <li>Grid settings</li>
+                    <li>Array of objects with their properties</li>
+                    <li>Custom properties for each object</li>
+                </ul>
+            </div>
+            
+            <div class="modal-buttons">
+                <button id="closeDocBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isDirty = false;
+        let isDarkTheme = true;
+
+        // Основные константы и переменные
+        let GRID_SIZE = 64;
+        const OBJECT_TYPES = ["brush", "player_start", "trigger", "light", "prop"];
+        
+        // Состояние редактора
+        let mapData = {
+            version: "1.0",
+            objects: [],
+            metadata: {
+                name: "NewMap",
+                author: "-",
+                description: "-"
+            }
+        };
+        
+        let selectedObject = null;
+        let dragging = false;
+        let rotating = false;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let offsetX = 0;
+        let offsetY = 0;
+        let scale = 1.0;
+        let snapToGrid = true;
+        let snapMode = "edge"; // "center" or "edge"
+        let currentMode = "select";
+        let nextObjectId = 1;
+        let isCreatingbrush = false;
+        let brushStartX = 0;
+        let brushStartY = 0;
+        let brushEndX = 0;
+        let brushEndY = 0;
+        let startOffsetX = 0;
+        let startOffsetY = 0;
+        
+        // Новые переменные для исправления перемещения
+        let startObjectX = 0;
+        let startObjectY = 0;
+        
+        // История для отмены/повтора
+        let history = [];
+        let historyIndex = -1;
+        const MAX_HISTORY = 50;
+        
+        // Элементы DOM
+        const canvas = document.getElementById('mapCanvas');
+        const ctx = canvas.getContext('2d');
+        const cursorXElem = document.getElementById('cursorX');
+        const cursorYElem = document.getElementById('cursorY');
+        const scaleDisplayElem = document.getElementById('scaleDisplay');
+        const gridSizeDisplayElem = document.getElementById('gridSizeDisplay');
+        const snapModeDisplayElem = document.getElementById('snapModeDisplay');
+        const gridSizeInput = document.getElementById('gridSizeInput');
+        const gridSnapMode = document.getElementById('gridSnapMode');
+        const objectsTableBody = document.querySelector('#objectsTable tbody');
+        const modeDisplayElem = document.getElementById('modeDisplay');
+        const notificationElem = document.getElementById('notification');
+        const rotateHandle = document.getElementById('rotateHandle');
+        const customPropertiesContainer = document.getElementById('customPropertiesContainer');
+        const addPropertyBtn = document.getElementById('addPropertyBtn');
+        const openCustomPropsBtn = document.getElementById('openCustomPropsBtn');
+        const customPropsModal = document.getElementById('customPropsModal');
+        const saveCustomPropsBtn = document.getElementById('saveCustomPropsBtn');
+        const cancelCustomPropsBtn = document.getElementById('cancelCustomPropsBtn');
+        
+        // Инициализация
+        function init() {
+            setupCanvas();
+            setupEventListeners();
+            resetView();
+            draw();
+            updateHistoryButtons();
+            showNotification("Editor initialized successfully");
+        }
+        
+        // Настройка холста
+        function setupCanvas() {
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+        }
+        
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            draw();
+        }
+        
+        // Настройка обработчиков событий
+        function setupEventListeners() {
+            // Кнопки инструментов
+            document.getElementById('selectBtn').addEventListener('click', () => setMode('select'));
+            document.getElementById('brushBtn').addEventListener('click', () => setMode('brush'));
+            document.getElementById('playerStartBtn').addEventListener('click', () => setMode('player_start'));
+            document.getElementById('triggerBtn').addEventListener('click', () => setMode('trigger'));
+            document.getElementById('lightBtn').addEventListener('click', () => setMode('light'));
+            document.getElementById('propBtn').addEventListener('click', () => setMode('prop'));
+            
+            // Кнопки управления видом
+            document.getElementById('zoomInBtn').addEventListener('click', () => zoomAtCenter(scale * 1.2));
+            document.getElementById('zoomOutBtn').addEventListener('click', () => zoomAtCenter(scale / 1.2));
+            document.getElementById('resetViewBtn').addEventListener('click', resetView);
+            document.getElementById('snapToGridCheckbox').addEventListener('change', (e) => {
+                snapToGrid = e.target.checked;
+                draw();
+            });
+            
+            // Управление размером сетки
+            gridSizeInput.addEventListener('change', (e) => {
+                GRID_SIZE = parseInt(e.target.value) || 50;
+                gridSizeDisplayElem.textContent = GRID_SIZE;
+                draw();
+            });
+            
+            // Управление режимом привязки
+            gridSnapMode.addEventListener('change', (e) => {
+                snapMode = e.target.value;
+                snapModeDisplayElem.textContent = snapMode === "center" ? "Center" : "Edge";
+                draw();
+            });
+            
+            // Кнопки файловых операций
+            document.getElementById('newBtn').addEventListener('click', showNewMapModal);
+            document.getElementById('openBtn').addEventListener('click', openMap);
+            document.getElementById('saveBtn').addEventListener('click', saveMap);
+            document.getElementById('confirmNewMapBtn').addEventListener('click', createNewMap);
+            document.getElementById('cancelNewMapBtn').addEventListener('click', hideNewMapModal);
+            
+            // Кнопки отмены/повтора
+            document.getElementById('undoBtn').addEventListener('click', undo);
+            document.getElementById('redoBtn').addEventListener('click', redo);
+            
+            // Кнопка удаления
+            document.getElementById('deleteBtn').addEventListener('click', deleteSelectedObject);
+            
+            // Обработчики свойств объектов
+            document.getElementById('propX').addEventListener('change', updateObjectProperties);
+            document.getElementById('propY').addEventListener('change', updateObjectProperties);
+            document.getElementById('propWidth').addEventListener('change', updateObjectProperties);
+            document.getElementById('propHeight').addEventListener('change', updateObjectProperties);
+            document.getElementById('propAngle').addEventListener('change', updateObjectProperties);
+            
+            // Обработчики событий холста
+            canvas.addEventListener('mousedown', onCanvasMouseDown);
+            canvas.addEventListener('mousemove', onCanvasMouseMove);
+            canvas.addEventListener('mouseup', onCanvasMouseUp);
+            canvas.addEventListener('wheel', onCanvasWheel);
+            canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+            
+            // Обработчик для ручки вращения
+            rotateHandle.addEventListener('mousedown', onRotateHandleMouseDown);
+            
+            // Обработчик выбора объекта из таблицы
+            objectsTableBody.addEventListener('click', onObjectsTableClick);
+            
+            // Map Settings
+            document.getElementById("mapSettingsBtn").addEventListener("click", () => {
+                document.getElementById("mapSettingsModal").style.display = "flex";
+                document.getElementById("mapName").value = mapData.metadata.name;
+                document.getElementById("mapAuthor").value = mapData.metadata.author;
+                document.getElementById("mapDescription").value = mapData.metadata.description;
+                document.getElementById("mapGridSize").value = GRID_SIZE;
+            });
+            document.getElementById("cancelMapSettingsBtn").addEventListener("click", () => {
+                document.getElementById("mapSettingsModal").style.display = "none";
+            });
+            document.getElementById("confirmMapSettingsBtn").addEventListener("click", () => {
+                mapData.metadata.name = document.getElementById("mapName").value;
+                mapData.metadata.author = document.getElementById("mapAuthor").value;
+                mapData.metadata.description = document.getElementById("mapDescription").value;
+                GRID_SIZE = parseInt(document.getElementById("mapGridSize").value) || GRID_SIZE;
+                gridSizeInput.value = GRID_SIZE;
+                gridSizeDisplayElem.textContent = GRID_SIZE;
+                document.getElementById("mapSettingsModal").style.display = "none";
+                markDirty();
+                draw();
+                showNotification("Map settings updated");
+            });
+
+            // Dark/Light Theme
+            document.getElementById("themeToggleBtn").addEventListener("click", toggleTheme);
+            
+            // Documentation
+            document.getElementById("docBtn").addEventListener("click", () => {
+                document.getElementById("documentationModal").style.display = "flex";
+            });
+            document.getElementById("closeDocBtn").addEventListener("click", () => {
+                document.getElementById("documentationModal").style.display = "none";
+            });
+            
+            // Custom properties
+            openCustomPropsBtn.addEventListener('click', openCustomPropsModal);
+            addPropertyBtn.addEventListener('click', addCustomPropertyField);
+            saveCustomPropsBtn.addEventListener('click', saveCustomProperties);
+            cancelCustomPropsBtn.addEventListener('click', closeCustomPropsModal);
+        }
+        
+        // Преобразование координат
+        function screenToWorldX(screenX) {
+            return (screenX - canvas.getBoundingClientRect().left - offsetX) / scale;
+        }
+        
+        function screenToWorldY(screenY) {
+            return (screenY - canvas.getBoundingClientRect().top - offsetY) / scale;
+        }
+        
+        function worldToScreenX(worldX) {
+            return worldX * scale + offsetX;
+        }
+        
+        function worldToScreenY(worldY) {
+            return worldY * scale + offsetY;
+        }
+        
+        // Функция привязки к сетке с учетом режима
+        function snapToGridPosition(x, y, obj = null) {
+            if (!snapToGrid) return { x, y };
+            
+            if (snapMode === "center") {
+                // Классическая привязка центра к сетке
+                return {
+                    x: Math.round(x / GRID_SIZE) * GRID_SIZE,
+                    y: Math.round(y / GRID_SIZE) * GRID_SIZE
+                };
+            } else {
+                // Привязка краев к сетке (для объектов с размерами)
+                if (obj && (obj.type === "brush" || obj.type === "trigger")) {
+                    const width = obj.width || 100;
+                    const height = obj.height || 64;
+                    
+                    // Выравниваем так, чтобы края объекта совпадали с линиями сетки
+                    const halfWidth = width / 2;
+                    const halfHeight = height / 2;
+                    
+                    // Вычисляем позицию центра, чтобы края совпадали с сеткой
+                    const snappedX = Math.round((x - halfWidth) / GRID_SIZE) * GRID_SIZE + halfWidth;
+                    const snappedY = Math.round((y - halfHeight) / GRID_SIZE) * GRID_SIZE + halfHeight;
+                    
+                    return { x: snappedX, y: snappedY };
+                } else {
+                    // Для объектов без размеров используем обычную привязку
+                    return {
+                        x: Math.round(x / GRID_SIZE) * GRID_SIZE,
+                        y: Math.round(y / GRID_SIZE) * GRID_SIZE
+                    };
+                }
+            }
+        }
+        
+        // Обработчики событий мыши
+        function onCanvasMouseDown(e) {
+            const rect = canvas.getBoundingClientRect();
+            const x = screenToWorldX(e.clientX);
+            const y = screenToWorldY(e.clientY);
+            
+            // Проверяем, не кликнули ли мы на ручке вращения
+            if (selectedObject && isOverRotateHandle(e.clientX, e.clientY)) {
+                rotating = true;
+                dragStartX = e.clientX;
+                dragStartY = e.clientY;
+                return;
+            }
+            
+            if (e.button === 0) { // Левая кнопка мыши
+                if (currentMode === "select") {
+                    const clickedObj = findObjectAt(x, y);
+                    if (clickedObj) {
+                        selectObject(clickedObj);
+                        dragging = true;
+                        dragStartX = e.clientX;
+                        dragStartY = e.clientY;
+                        startOffsetX = offsetX;
+                        startOffsetY = offsetY;
+                        // Сохраняем исходные координаты объекта
+                        startObjectX = clickedObj.x;
+                        startObjectY = clickedObj.y;
+                        saveState();
+                    } else {
+                        selectObject(null);
+                    }
+                } else if (currentMode === "brush") {
+                    // Начало создания стены
+                    isCreatingbrush = true;
+                    const snappedPos = snapToGridPosition(x, y);
+                    brushStartX = snappedPos.x;
+                    brushStartY = snappedPos.y;
+                    brushEndX = brushStartX;
+                    brushEndY = brushStartY;
+                    saveState();
+                } else {
+                    // Режим добавления объекта
+                    const snappedPos = snapToGridPosition(x, y);
+                    addObject(currentMode, snappedPos.x, snappedPos.y);
+                    saveState();
+                }
+            } else if (e.button === 2) { // Правая кнопка мыши - панорамирование
+                dragStartX = e.clientX;
+                dragStartY = e.clientY;
+                startOffsetX = offsetX;
+                startOffsetY = offsetY;
+                canvas.style.cursor = 'grabbing';
+            }
+        }
+        
+        function onCanvasMouseMove(e) {
+            const rect = canvas.getBoundingClientRect();
+            const x = screenToWorldX(e.clientX);
+            const y = screenToWorldY(e.clientY);
+            
+            // Обновление позиции курсора в статусной строке
+            cursorXElem.textContent = Math.round(x);
+            cursorYElem.textContent = Math.round(y);
+            
+            if (rotating && selectedObject) {
+                // Вращение объекта
+                const centerX = worldToScreenX(selectedObject.x);
+                const centerY = worldToScreenY(selectedObject.y);
+                
+                const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * 180 / Math.PI;
+                selectedObject.angle = Math.round(angle);
+                
+                document.getElementById('propAngle').value = selectedObject.angle;
+                updateRotateHandlePosition();
+                draw();
+                return;
+            }
+            
+            if (dragging && selectedObject) {
+                // Перемещение объекта - ИСПРАВЛЕННАЯ ЧАСТЬ
+                const worldDX = (e.clientX - dragStartX) / scale;
+                const worldDY = (e.clientY - dragStartY) / scale;
+                
+                let newX = startObjectX + worldDX;
+                let newY = startObjectY + worldDY;
+                
+                // Применяем привязку к сетке
+                if (snapToGrid) {
+                    const snappedPos = snapToGridPosition(newX, newY, selectedObject);
+                    newX = snappedPos.x;
+                    newY = snappedPos.y;
+                }
+                
+                selectedObject.x = newX;
+                selectedObject.y = newY;
+                
+                updateRotateHandlePosition();
+                draw();
+                updatePropertiesPanel();
+                updateObjectsTable();
+            } else if (e.buttons === 2) {
+                // Панорамирование
+                offsetX = startOffsetX + (e.clientX - dragStartX);
+                offsetY = startOffsetY + (e.clientY - dragStartY);
+                draw();
+            } else if (isCreatingbrush) {
+                // Обновление конечной точки стены
+                const snappedPos = snapToGridPosition(x, y);
+                brushEndX = snappedPos.x;
+                brushEndY = snappedPos.y;
+                draw();
+            }
+            
+            // Обновление курсора при наведении на ручку вращения
+            if (selectedObject && isOverRotateHandle(e.clientX, e.clientY)) {
+                canvas.style.cursor = 'grab';
+            } else if (currentMode === "select") {
+                canvas.style.cursor = 'default';
+            } else {
+                canvas.style.cursor = 'crosshair';
+            }
+        }
+        
+        function onCanvasMouseUp(e) {
+            if (e.button === 0) {
+                if (isCreatingbrush) {
+                    // Завершение создания стены
+                    finishbrush();
+                }
+                dragging = false;
+                rotating = false;
+            } else if (e.button === 2) {
+                canvas.style.cursor = 'default';
+            }
+        }
+        
+        function onRotateHandleMouseDown(e) {
+            rotating = true;
+            dragStartX = e.clientX;
+            dragStartY = e.clientY;
+            e.stopPropagation();
+        }
+        
+        function onCanvasWheel(e) {
+            e.preventDefault();
+            
+            if (e.ctrlKey && selectedObject) {
+                // Вращение объекта при зажатом Ctrl
+                const rotationAmount = e.deltaY > 0 ? -5 : 5;
+                if (!selectedObject.angle) selectedObject.angle = 0;
+                selectedObject.angle = (selectedObject.angle + rotationAmount) % 360;
+                if (selectedObject.angle < 0) selectedObject.angle += 360;
+                
+                document.getElementById('propAngle').value = selectedObject.angle;
+                updateRotateHandlePosition();
+                draw();
+                return;
+            }
+            
+            // Масштабирование в точке курсора
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            const zoomIntensity = 0.1;
+            const wheel = e.deltaY < 0 ? 1 : -1;
+            
+            // Вычисляем мировые координаты до масштабирования
+            const worldX = screenToWorldX(mouseX);
+            const worldY = screenToWorldY(mouseY);
+            
+            // Применяем масштабирование
+            const newScale = scale + wheel * zoomIntensity * scale;
+            setScale(newScale, worldX, worldY);
+        }
+        
+        // Проверка, находится ли курсор над ручкой вращения
+        function isOverRotateHandle(x, y) {
+            if (!selectedObject) return false;
+            
+            const handleX = parseFloat(rotateHandle.style.left);
+            const handleY = parseFloat(rotateHandle.style.top);
+            const distance = Math.sqrt(Math.pow(x - handleX, 2) + Math.pow(y - handleY, 2));
+            
+            return distance <= 15; // 15px radius
+        }
+        
+        // Обновление позиции ручки вращения
+        function updateRotateHandlePosition() {
+            if (!selectedObject) {
+                rotateHandle.style.display = 'none';
+                return;
+            }
+            
+            const x = worldToScreenX(selectedObject.x);
+            const y = worldToScreenY(selectedObject.y);
+            
+            // Позиция ручки вращения (на 40px выше центра объекта)
+            const angle = selectedObject.angle ? selectedObject.angle * Math.PI / 180 : 0;
+            const handleDistance = 40 * scale;
+            const handleX = x + Math.sin(angle) * handleDistance;
+            const handleY = y - Math.cos(angle) * handleDistance;
+            
+            rotateHandle.style.left = handleX + 'px';
+            rotateHandle.style.top = handleY + 'px';
+            rotateHandle.style.display = 'block';
+        }
+        
+        // Создание стены
+        function finishbrush() {
+            if (!isCreatingbrush) return;
+            
+            const width = Math.abs(brushEndX - brushStartX);
+            const height = Math.abs(brushEndY - brushStartY);
+            
+            // Минимальный размер стены
+            if (width < 5 || height < 5) {
+                isCreatingbrush = false;
+                draw();
+                return;
+            }
+            
+            const centerX = (brushStartX + brushEndX) / 2;
+            const centerY = (brushStartY + brushEndY) / 2;
+            
+            const newObj = {
+                id: `obj_${nextObjectId++}`,
+                type: "brush",
+                x: centerX,
+                y: centerY,
+                width: width,
+                height: height,
+                angle: 0,
+                properties: {}
+            };
+            
+            mapData.objects.push(newObj);
+            selectObject(newObj);
+            isCreatingbrush = false;
+            draw();
+            updateObjectsTable();
+        }
+        
+        // Поиск объекта по координатам
+        function findObjectAt(x, y) {
+            // Проверяем объекты в обратном порядке (сверху вниз)
+            for (let i = mapData.objects.length - 1; i >= 0; i--) {
+                const obj = mapData.objects[i];
+                const objX = obj.x || 0;
+                const objY = obj.y || 0;
+                
+                if (obj.type === "brush") {
+                    const width = obj.width || 100;
+                    const height = obj.height || 20;
+                    
+                    // Проверка попадания в прямоугольник
+                    if (Math.abs(x - objX) <= width/2 && Math.abs(y - objY) <= height/2) {
+                        return obj;
+                    }
+                } else {
+                    // Для других объектов используем радиус
+                    const radius = 15;
+                    const distance = Math.sqrt((x - objX)**2 + (y - objY)**2);
+                    if (distance <= radius) {
+                        return obj;
+                    }
+                }
+            }
+            
+            return null;
+        }
+        
+        // Управление объектами
+        function addObject(type, x, y) {
+            const newObj = {
+                id: `obj_${nextObjectId++}`,
+                type: type,
+                x: x,
+                y: y,
+                properties: {}
+            };
+            
+            // Добавляем специфичные свойства в зависимости от типа
+            if (type === "brush") {
+                newObj.width = 100;
+                newObj.height = 20;
+                newObj.angle = 0;
+            } else if (type === "player_start") {
+                newObj.angle = 0;
+            } else if (type === "trigger") {
+                newObj.width = 64;
+                newObj.height = 64;
+                newObj.angle = 0;
+            }
+            
+            mapData.objects.push(newObj);
+            selectObject(newObj);
+            draw();
+            updateObjectsTable();
+            showNotification(`Added ${type.replace('_', ' ')} object`);
+        }
+        
+        function deleteSelectedObject() {
+            if (!selectedObject) {
+                showNotification("No object selected to delete", true);
+                return;
+            }
+            
+            const index = mapData.objects.indexOf(selectedObject);
+            if (index !== -1) {
+                saveState();
+                mapData.objects.splice(index, 1);
+                selectObject(null);
+                draw();
+                updateObjectsTable();
+                showNotification("Object deleted");
+            }
+        }
+        
+        function selectObject(obj) {
+            selectedObject = obj;
+            updateRotateHandlePosition();
+            draw();
+            updatePropertiesPanel();
+            updateObjectsTable();
+        }
+        
+        // Отрисовка
+        function draw() {
+            // Очистка холста
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Рисование сетки
+            drawGrid();
+            
+            // Рисование временной стены, если она создается
+            if (isCreatingbrush) {
+                drawTemporarybrush();
+            }
+            
+            // Рисование объектов
+            mapData.objects.forEach(obj => {
+                drawObject(obj);
+            });
+            
+            // Выделение выбранного объекта
+            if (selectedObject) {
+                highlightObject(selectedObject);
+            }
+        }
+        
+        function drawGrid() {
+            const visibleLeft = screenToWorldX(0);
+            const visibleRight = screenToWorldX(canvas.width);
+            const visibleTop = screenToWorldY(0);
+            const visibleBottom = screenToWorldY(canvas.height);
+            
+            const startX = Math.floor(visibleLeft / GRID_SIZE) * GRID_SIZE;
+            const endX = Math.ceil(visibleRight / GRID_SIZE) * GRID_SIZE;
+            const startY = Math.floor(visibleTop / GRID_SIZE) * GRID_SIZE;
+            const endY = Math.ceil(visibleBottom / GRID_SIZE) * GRID_SIZE;
+            
+            // Рисуем сетку
+            ctx.strokeStyle = isDarkTheme ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+            ctx.setLineDash([2, 2]);
+            ctx.lineWidth = 1;
+            
+            for (let x = startX; x <= endX; x += GRID_SIZE) {
+                const screenX = worldToScreenX(x);
+                ctx.beginPath();
+                ctx.moveTo(screenX, 0);
+                ctx.lineTo(screenX, canvas.height);
+                ctx.stroke();
+            }
+            
+            for (let y = startY; y <= endY; y += GRID_SIZE) {
+                const screenY = worldToScreenY(y);
+                ctx.beginPath();
+                ctx.moveTo(0, screenY);
+                ctx.lineTo(canvas.width, screenY);
+                ctx.stroke();
+            }
+            
+            ctx.setLineDash([]);
+            
+            // Рисуем оси
+            const originX = worldToScreenX(0);
+            const originY = worldToScreenY(0);
+            
+            if (originX >= 0 && originX <= canvas.width) {
+                ctx.strokeStyle = 'red';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(originX, 0);
+                ctx.lineTo(originX, canvas.height);
+                ctx.stroke();
+            }
+            
+            if (originY >= 0 && originY <= canvas.height) {
+                ctx.strokeStyle = 'green';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(0, originY);
+                ctx.lineTo(canvas.width, originY);
+                ctx.stroke();
+            }
+        }
+        
+        function drawTemporarybrush() {
+            const startX = worldToScreenX(brushStartX);
+            const startY = worldToScreenY(brushStartY);
+            const endX = worldToScreenX(brushEndX);
+            const endY = worldToScreenY(brushEndY);
+            
+            const width = Math.abs(endX - startX);
+            const height = Math.abs(endY - startY);
+            const centerX = (startX + endX) / 2;
+            const centerY = (startY + endY) / 2;
+            
+            ctx.fillStyle = 'rgba(173, 216, 230, 0.5)';
+            ctx.strokeStyle = 'blue';
+            ctx.lineWidth = 2;
+            
+            ctx.beginPath();
+            ctx.rect(centerX - width/2, centerY - height/2, width, height);
+            ctx.fill();
+            ctx.stroke();
+            
+            // Показываем размеры
+            ctx.fillStyle = isDarkTheme ? 'white' : 'black';
+            ctx.font = '12px Arial';
+            ctx.fillText(`${Math.round(Math.abs(brushEndX - brushStartX))}x${Math.round(Math.abs(brushEndY - brushStartY))}`, centerX, centerY);
+        }
+        
+        function drawObject(obj) {
+            const x = worldToScreenX(obj.x);
+            const y = worldToScreenY(obj.y);
+            
+            ctx.save();
+            ctx.translate(x, y);
+            
+            if (obj.angle) {
+                ctx.rotate(obj.angle * Math.PI / 180);
+            }
+            
+            switch (obj.type) {
+                case "brush":
+                    const width = (obj.width || 100) * scale;
+                    const height = (obj.height || 20) * scale;
+                    
+                    ctx.fillStyle = 'rgba(173, 216, 230, 0.7)';
+                    ctx.strokeStyle = 'blue';
+                    ctx.lineWidth = 2;
+                    
+                    ctx.fillRect(-width/2, -height/2, width, height);
+                    ctx.strokeRect(-width/2, -height/2, width, height);
+                    break;
+                    
+                case "player_start":
+                        /*const playerColor = obj.properties?.color || '#00FF00';
+                        const size = 15 * scale;
+                        
+                        // Голова
+                        ctx.fillStyle = playerColor;
+                        ctx.beginPath();
+                        ctx.arc(0, -size/2, size/4, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+                        
+                        // Тело
+                        ctx.beginPath();
+                        ctx.moveTo(0, -size/4);
+                        ctx.lineTo(0, size/3);
+                        ctx.stroke();
+                        
+                        // Руки
+                        ctx.beginPath();
+                        ctx.moveTo(-size/3, 0);
+                        ctx.lineTo(size/3, 0);
+                        ctx.stroke();
+                        
+                        // Ноги
+                        ctx.beginPath();
+                        ctx.moveTo(-size/3, size/3);
+                        ctx.lineTo(0, size/3);
+                        ctx.lineTo(size/3, size/2);
+                        ctx.stroke();
+                        
+                        // Направление (стрелка)
+                        ctx.strokeStyle = '#000000';
+                        ctx.lineWidth = 1 * scale;
+                        ctx.beginPath();
+                        ctx.moveTo(0, 0);
+                        ctx.lineTo(0, -size);
+                        ctx.stroke();
+                        
+                        // Головка стрелки
+                        ctx.beginPath();
+                        ctx.moveTo(-size/6, -size/1.5);
+                        ctx.lineTo(0, -size);
+                        ctx.lineTo(size/6, -size/1.5);
+                        ctx.stroke();
+                        break; */
+
+
+                    /*/// Новый улучшенный вид для точки старта игрока
+                    const playerColor = obj.properties?.color || '#00FF00';
+                    const radius = 15 * scale;
+                    
+                    // Основной круг
+                    ctx.fillStyle = playerColor;
+                    ctx.beginPath();
+                    ctx.arc(0, 0, radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Контур
+                    ctx.strokeStyle = '#000000';
+                    ctx.lineWidth = 2 * scale;
+                    ctx.stroke();
+                    
+                    // Буква "P" внутри круга
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.font = `${12 * scale}px Arial`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('P', 0, 0);
+                    
+                    // Стрелка направления
+                    ctx.strokeStyle = '#000000';
+                    ctx.lineWidth = 2 * scale;
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(0, -radius * 2);
+                    ctx.stroke();
+                    
+                    // Головка стрелки
+                    ctx.beginPath();
+                    ctx.moveTo(-5 * scale, -radius * 2 + 10 * scale);
+                    ctx.lineTo(0, -radius * 2);
+                    ctx.lineTo(5 * scale, -radius * 2 + 10 * scale);
+                    ctx.stroke();
+                    break;*/
+
+
+                    ctx.fillStyle = 'green';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 10 * scale, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    // Направление
+                    ctx.strokeStyle = 'darkgreen';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(0, -20 * scale);
+                    ctx.stroke();
+                    break;
+                    
+                case "trigger":
+                    ctx.fillStyle = 'rgba(255, 165, 0, 0.5)';
+                    ctx.strokeStyle = 'orange';
+                    ctx.lineWidth = 2;
+                    
+                    if (obj.width && obj.height) {
+                        const width = (obj.width || 50) * scale;
+                        const height = (obj.height || 50) * scale;
+                        ctx.beginPath();
+                        ctx.rect(-width/2, -height/2, width, height);
+                        ctx.fill();
+                        ctx.stroke();
+                    } else {
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 15 * scale, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+                    }
+                    break;
+                    
+                case "light":
+                    ctx.fillStyle = 'yellow';
+                    ctx.strokeStyle = 'goldenrod';
+                    ctx.lineWidth = 2;
+                    
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 12 * scale, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    // Лучи
+                    ctx.strokeStyle = 'rgba(255, 255, 0, 0.3)';
+                    for (let i = 0; i < 8; i++) {
+                        const angle = (i / 8) * Math.PI * 2;
+                        ctx.beginPath();
+                        ctx.moveTo(0, 0);
+                        ctx.lineTo(Math.cos(angle) * 25 * scale, Math.sin(angle) * 25 * scale);
+                        ctx.stroke();
+                    }
+                    break;
+                    
+                case "prop":
+                    ctx.fillStyle = 'lightgray';
+                    ctx.strokeStyle = 'gray';
+                    ctx.lineWidth = 2;
+                    
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 8 * scale, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                    break;
+            }
+            
+            // ID объекта
+            if (scale > 0.5) {
+                ctx.setTransform(1, 0, 0, 1, 0, 0); // Сброс трансформации
+                ctx.fillStyle = isDarkTheme ? 'white' : 'black';
+                ctx.font = '12px Arial';
+                ctx.fillText(obj.id, x + 10, y - 10);
+            }
+            
+            ctx.restore();
+        }
+        
+        function highlightObject(obj) {
+            const x = worldToScreenX(obj.x);
+            const y = worldToScreenY(obj.y);
+            
+            ctx.save();
+            ctx.translate(x, y);
+            
+            if (obj.angle) {
+                ctx.rotate(obj.angle * Math.PI / 180);
+            }
+            
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            
+            if (obj.type === "brush") {
+                const width = (obj.width || 100) * scale;
+                const height = (obj.height || 20) * scale;
+                
+                ctx.strokeRect(-width/2, -height/2, width, height);
+            } else {
+                ctx.beginPath();
+                ctx.arc(0, 0, 20 * scale, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            
+            ctx.restore();
+        }
+        
+        // Обновление интерфейса
+        function updatePropertiesPanel() {
+            document.getElementById('propId').value = selectedObject ? selectedObject.id : '';
+            document.getElementById('propType').value = selectedObject ? selectedObject.type : '';
+            document.getElementById('propX').value = selectedObject ? selectedObject.x : '';
+            document.getElementById('propY').value = selectedObject ? selectedObject.y : '';
+            document.getElementById('propWidth').value = selectedObject ? (selectedObject.width || '') : '';
+            document.getElementById('propHeight').value = selectedObject ? (selectedObject.height || '') : '';
+            document.getElementById('propAngle').value = selectedObject ? (selectedObject.angle || '') : '';
+            
+            // Включаем/выключаем поля ввода в зависимости от выбранного объекта
+            const inputs = document.querySelectorAll('.properties-form input');
+            inputs.forEach(input => {
+                input.disabled = !selectedObject || (input.id !== 'propX' && 
+                                                    input.id !== 'propY' && 
+                                                    input.id !== 'propWidth' && 
+                                                    input.id !== 'propHeight' && 
+                                                    input.id !== 'propAngle');
+            });
+            
+            // Обновляем состояние кнопки редактирования custom properties
+            document.getElementById('openCustomPropsBtn').disabled = !selectedObject;
+        }
+        
+        function updateObjectsTable() {
+            objectsTableBody.innerHTML = '';
+            
+            mapData.objects.forEach(obj => {
+                const row = document.createElement('tr');
+                if (obj === selectedObject) {
+                    row.classList.add('selected');
+                }
+                
+                row.innerHTML = `
+                    <td>${obj.id}</td>
+                    <td>${obj.type}</td>
+                    <td>${Math.round(obj.x)}</td>
+                    <td>${Math.round(obj.y)}</td>
+                `;
+                
+                objectsTableBody.appendChild(row);
+            });
+        }
+        
+        function onObjectsTableClick(e) {
+            const row = e.target.closest('tr');
+            if (!row) return;
+            
+            const id = row.cells[0].textContent;
+            const obj = mapData.objects.find(o => o.id === id);
+            if (obj) {
+                selectObject(obj);
+            }
+        }
+        
+        function updateObjectProperties() {
+            if (!selectedObject) return;
+            
+            selectedObject.x = parseFloat(document.getElementById('propX').value) || 0;
+            selectedObject.y = parseFloat(document.getElementById('propY').value) || 0;
+            
+            if (selectedObject.type === "brush" || selectedObject.type === "trigger") {
+                selectedObject.width = parseFloat(document.getElementById('propWidth').value) || 100;
+                selectedObject.height = parseFloat(document.getElementById('propHeight').value) || 20;
+            }
+            
+            if (document.getElementById('propAngle').value) {
+                selectedObject.angle = parseFloat(document.getElementById('propAngle').value) || 0;
+            }
+            
+            updateRotateHandlePosition();
+            draw();
+            updateObjectsTable();
+            markDirty();
+        }
+        
+        // Управление режимами
+        function setMode(mode) {
+            currentMode = mode;
+            
+            // Если переключаемся из режима создания стены, отменяем создание
+            if (isCreatingbrush && mode !== "brush") {
+                isCreatingbrush = false;
+            }
+            
+            // Обновляем активную кнопку
+            document.querySelectorAll('.toolbar button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            if (mode === "select") {
+                document.getElementById('selectBtn').classList.add('active');
+                canvas.style.cursor = 'default';
+                modeDisplayElem.textContent = "Select";
+            } else {
+                document.getElementById(mode + 'Btn').classList.add('active');
+                canvas.style.cursor = 'crosshair';
+                modeDisplayElem.textContent = mode.charAt(0).toUpperCase() + mode.slice(1).replace('_', ' ');
+            }
+            
+            draw();
+        }
+        
+        // Управление видом
+        function setScale(newScale, centerX, centerY) {
+            const oldScale = scale;
+            scale = Math.max(0.1, Math.min(10, newScale));
+            
+            // Если указана точка центра, корректируем смещение
+            if (centerX !== undefined && centerY !== undefined) {
+                const screenX = worldToScreenX(centerX);
+                const screenY = worldToScreenY(centerY);
+                
+                // Вычисляем новые смещения для сохранения позиции под курсором
+                offsetX = screenX - centerX * scale;
+                offsetY = screenY - centerY * scale;
+            }
+            
+            scaleDisplayElem.textContent = Math.round(scale * 100) + '%';
+            updateRotateHandlePosition();
+            draw();
+        }
+        
+        function zoomAtCenter(newScale) {
+            const centerX = screenToWorldX(canvas.width / 2);
+            const centerY = screenToWorldY(canvas.height / 2);
+            setScale(newScale, centerX, centerY);
+        }
+        
+        function resetView() {
+            offsetX = canvas.width / 2;
+            offsetY = canvas.height / 2;
+            scale = 1.0;
+            scaleDisplayElem.textContent = '100%';
+            updateRotateHandlePosition();
+            draw();
+        }
+        
+        // Работа с файлами
+        function showNewMapModal() {
+            document.getElementById('newMapModal').style.display = 'flex';
+        }
+        
+        function hideNewMapModal() {
+            document.getElementById('newMapModal').style.display = 'none';
+        }
+        
+        function createNewMap() {
+            const name = document.getElementById('newMapName').value;
+            const author = document.getElementById('newMapAuthor').value;
+            const description = document.getElementById('newMapDescription').value;
+            
+            saveState();
+            
+            mapData = {
+                version: "1.0",
+                objects: [],
+                metadata: {
+                    name: name,
+                    author: author,
+                    description: description
+                }
+            };
+            
+            nextObjectId = 1;
+            selectObject(null);
+            resetView();
+            hideNewMapModal();
+            showNotification("New map created");
+        }
+        
+        function openMap() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.vme';
+            
+            input.onchange = e => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    try {
+                        const content = e.target.result;
+                        saveState();
+                        mapData = JSON.parse(content);
+                        
+                        // Находим максимальный ID для продолжения нумерации
+                        let maxId = 0;
+                        mapData.objects.forEach(obj => {
+                            const idNum = parseInt(obj.id.split('_')[1]);
+                            if (idNum > maxId) maxId = idNum;
+                        });
+                        nextObjectId = maxId + 1;
+                        
+                        // Убедимся, что у каждого объекта есть properties
+                        mapData.objects.forEach(obj => {
+                            if (!obj.properties) {
+                                obj.properties = {};
+                            }
+                        });
+                        
+                        selectObject(null);
+                        resetView();
+                        showNotification("Map loaded successfully");
+                    } catch (error) {
+                        showNotification('Error parsing map file: ' + error.message, true);
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+        
+        function saveMap() {
+            const dataStr = JSON.stringify(mapData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `${mapData.metadata.name}.vme`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            isDirty = false;
+            showNotification("Map saved successfully");
+        }
+        
+        // История действий
+        function saveState() {
+            // Удаляем все состояния после текущего индекса (если мы отменили некоторые действия)
+            if (historyIndex < history.length - 1) {
+                history = history.slice(0, historyIndex + 1);
+            }
+            
+            // Сохраняем текущее состояние
+            history.push(JSON.parse(JSON.stringify(mapData)));
+            historyIndex = history.length - 1;
+            
+            // Ограничиваем размер истории
+            if (history.length > MAX_HISTORY) {
+                history.shift();
+                historyIndex--;
+            }
+            
+            updateHistoryButtons();
+        }
+        
+        function undo() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                mapData = JSON.parse(JSON.stringify(history[historyIndex]));
+                selectObject(null);
+                draw();
+                updateObjectsTable();
+                updateHistoryButtons();
+                showNotification("Undo completed");
+            }
+        }
+        
+        function redo() {
+            if (historyIndex < history.length - 1) {
+                historyIndex++;
+                mapData = JSON.parse(JSON.stringify(history[historyIndex]));
+                selectObject(null);
+                draw();
+                updateObjectsTable();
+                updateHistoryButtons();
+                showNotification("Redo completed");
+            }
+        }
+        
+        function updateHistoryButtons() {
+            document.getElementById('undoBtn').disabled = historyIndex <= 0;
+            document.getElementById('redoBtn').disabled = historyIndex >= history.length - 1;
+        }
+        
+        // Утилиты
+        function markDirty() {
+            isDirty = true;
+        }
+        
+        function toggleTheme() {
+            isDarkTheme = !isDarkTheme;
+            if (isDarkTheme) {
+                document.body.classList.remove("light-theme");
+            } else {
+                document.body.classList.add("light-theme");
+            }
+            draw();
+        }
+        
+        function showNotification(message, isError = false) {
+            notificationElem.textContent = message;
+            notificationElem.className = isError ? "notification error" : "notification";
+            notificationElem.style.display = "block";
+            
+            setTimeout(() => {
+                notificationElem.style.display = "none";
+            }, 3000);
+        }
+        
+        // Custom properties functions
+        function openCustomPropsModal() {
+            if (!selectedObject) return;
+            
+            // Ensure properties object exists
+            if (!selectedObject.properties) {
+                selectedObject.properties = {};
+            }
+            
+            // Fill the modal with current properties
+            updateCustomPropertiesUI();
+            
+            // Show the modal
+            customPropsModal.style.display = 'flex';
+        }
+        
+        function closeCustomPropsModal() {
+            customPropsModal.style.display = 'none';
+        }
+        
+        function updateCustomPropertiesUI() {
+            customPropertiesContainer.innerHTML = '';
+            
+            if (!selectedObject || !selectedObject.properties) {
+                return;
+            }
+            
+            // Add property fields
+            for (const key in selectedObject.properties) {
+                addCustomPropertyField(key, selectedObject.properties[key]);
+            }
+        }
+        
+        function addCustomPropertyField(key = '', value = '') {
+            const propertyRow = document.createElement('div');
+            propertyRow.className = 'property-row';
+            
+            const keyInput = document.createElement('input');
+            keyInput.type = 'text';
+            keyInput.placeholder = 'Property name';
+            keyInput.value = key;
+            
+            const valueInput = document.createElement('input');
+            valueInput.type = 'text';
+            valueInput.placeholder = 'Value';
+            valueInput.value = value;
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-property';
+            removeBtn.innerHTML = '×';
+            removeBtn.addEventListener('click', () => {
+                propertyRow.remove();
+            });
+            
+            propertyRow.appendChild(keyInput);
+            propertyRow.appendChild(valueInput);
+            propertyRow.appendChild(removeBtn);
+            
+            customPropertiesContainer.appendChild(propertyRow);
+        }
+        
+        function saveCustomProperties() {
+            if (!selectedObject) return;
+            
+            // Ensure properties object exists
+            if (!selectedObject.properties) {
+                selectedObject.properties = {};
+            }
+            
+            // Clear existing properties
+            selectedObject.properties = {};
+            
+            // Collect all properties from the modal
+            const propertyRows = customPropertiesContainer.querySelectorAll('.property-row');
+            propertyRows.forEach(row => {
+                const keyInput = row.querySelector('input:nth-child(1)');
+                const valueInput = row.querySelector('input:nth-child(2)');
+                const key = keyInput.value.trim();
+                const value = valueInput.value.trim();
+                
+                if (key) {
+                    selectedObject.properties[key] = value;
+                }
+            });
+            
+            markDirty();
+            closeCustomPropsModal();
+            showNotification("Custom properties saved");
+        }
+        
+        // Глобальные обработчики
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Delete' && selectedObject) {
+                deleteSelectedObject();
+            } else if (e.key === 'Escape') {
+                if (isCreatingbrush) {
+                    isCreatingbrush = false;
+                    draw();
+                } else if (selectedObject) {
+                    selectObject(null);
+                }
+            } else if (e.key === 'g' || e.key === 'G') {
+                snapToGrid = !snapToGrid;
+                document.getElementById('snapToGridCheckbox').checked = snapToGrid;
+                draw();
+            } else if (e.ctrlKey && e.key === 'z') {
+                e.preventDefault();
+                undo();
+            } else if (e.ctrlKey && e.key === 'y') {
+                e.preventDefault();
+                redo();
+            } else if (e.key === 'ArrowLeft' && selectedObject) {
+                selectedObject.x -= snapToGrid ? GRID_SIZE : 1;
+                updatePropertiesPanel();
+                updateRotateHandlePosition();
+                draw();
+            } else if (e.key === 'ArrowRight' && selectedObject) {
+                selectedObject.x += snapToGrid ? GRID_SIZE : 1;
+                updatePropertiesPanel();
+                updateRotateHandlePosition();
+                draw();
+            } else if (e.key === 'ArrowUp' && selectedObject) {
+                selectedObject.y -= snapToGrid ? GRID_SIZE : 1;
+                updatePropertiesPanel();
+                updateRotateHandlePosition();
+                draw();
+            } else if (e.key === 'ArrowDown' && selectedObject) {
+                selectedObject.y += snapToGrid ? GRID_SIZE : 1;
+                updatePropertiesPanel();
+                updateRotateHandlePosition();
+                draw();
+            }
+            
+            // Tool shortcuts
+            if (!e.ctrlKey && !e.altKey && !e.metaKey) {
+                switch (e.key.toLowerCase()) {
+                    case 'q': setMode('select'); break;
+                    case 'b': setMode('brush'); break;
+                    case 'p': setMode('player_start'); break;
+                    case 't': setMode('trigger'); break;
+                    case 'l': setMode('light'); break;
+                    case 'o': setMode('prop'); break;
+                }
+            }
+        });
+
+        window.addEventListener("beforeunload", (e) => {
+            if (isDirty) {
+                e.preventDefault();
+                e.returnValue = "";
+            }
+        });
+        
+        // Запуск приложения
+        window.onload = init;
+    </script>
+</body>
+</html>
