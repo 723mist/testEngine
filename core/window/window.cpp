@@ -35,10 +35,11 @@ int EngineWindow::Init(const char* title, int width, int height){
 
         frames++;
         double currentTime = glfwGetTime();
-        if (currentTime - lastTime >= 1.0) {
-            std::cout << "FPS: " << frames << std::endl;
-            std::string titleWithFPS = std::string(title) + " FPS: " + std::to_string(int(frames));
+        if (currentTime - lastTime >= 0.2) {
+            double fps = frames / (currentTime - lastTime);
+            std::string titleWithFPS = std::string(title) + " FPS: " + std::to_string((int)fps);
             glfwSetWindowTitle(window, titleWithFPS.c_str());
+            std::cout << "FPS: " << (int)fps << std::endl;
             frames = 0;
             lastTime = currentTime;
         }
