@@ -1,6 +1,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "window.hpp"
+#include "../graphics/objects.hpp"
 #include <iostream>
 #include <string>
 //#include <sstream>
@@ -29,6 +30,12 @@ int EngineWindow::Init(const char* title, int width, int height){
     GLFWcursor* cursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
     glfwSetCursor(window, cursor);
 
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, width, 0, height, -1, 1); // теперь (0,0) левый нижний угол
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -43,6 +50,8 @@ int EngineWindow::Init(const char* title, int width, int height){
             frames = 0;
             lastTime = currentTime;
         }
+
+        drawRect(width/2-50, height/2-50, 100, 100, 1.0f, 0.5f, 0.0f);
 
         glfwPollEvents();
 
