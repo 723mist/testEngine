@@ -9,6 +9,7 @@
 #include "graphics/graphics.hpp"
 #include "graphics/objects.hpp"
 #include "graphics/rect.hpp"
+#include "graphics/circle.hpp"
 
 #include "input/input.hpp"
 

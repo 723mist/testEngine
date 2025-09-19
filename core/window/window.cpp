@@ -4,6 +4,7 @@
 #include "../graphics/objects.hpp"
 #include <iostream>
 #include <string>
+#include <cmath>
 //#include <sstream>
 
 int EngineWindow::Init(const char* title, int width, int height){
