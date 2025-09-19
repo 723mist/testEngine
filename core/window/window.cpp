@@ -36,6 +36,8 @@ int EngineWindow::Init(const char* title, int width, int height){
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
+    std::cout << width << "x" << height;
+
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -51,7 +53,9 @@ int EngineWindow::Init(const char* title, int width, int height){
             lastTime = currentTime;
         }
 
-        drawRect(width/2-50, height/2-50, 100, 100, 1.0f, 0.5f, 0.0f);
+        for (auto obj : objects) {
+            obj->draw();
+        }
 
         glfwPollEvents();
 

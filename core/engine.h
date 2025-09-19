@@ -7,6 +7,8 @@
 #include "window/window.hpp"
 
 #include "graphics/graphics.hpp"
+#include "graphics/objects.hpp"
+#include "graphics/rect.hpp"
 
 #include "input/input.hpp"
 

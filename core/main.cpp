@@ -4,6 +4,13 @@
 
 int main() {
     EngineWindow window;
-    window.Init();
+
+    int width = 500;
+    int height = 500;
+
+    window.add(new Rect(width/2-50, height/2-50, 100, 100, 1.0f, 0.5f, 0.0f));
+
+    window.Init("Engine window 500x500", width, height);
+
     return 0;
 }
