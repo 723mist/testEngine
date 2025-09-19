@@ -1,0 +1,5 @@
+brush
+player_start
+trigger
+light
+prop
