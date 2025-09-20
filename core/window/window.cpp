@@ -7,6 +7,21 @@
 #include <cmath>
 //#include <sstream>
 
+void drawRect2(float pos_x, float pos_y, float scale_x, float scale_y, float red, float green, float blue, float rot) {
+   glPushMatrix();
+    glTranslatef(pos_x, pos_y, 0.0f);
+    glColor3f(red, green, blue); //1.0f 0.5f 0.0f orange
+    glRotatef(rot, 0, 0, 1);
+    glBegin(GL_QUADS);
+        glVertex2f(0.0f, 0.0f);
+        glVertex2f(0.0f, scale_y);
+        glVertex2f(scale_x, scale_y);
+        glVertex2f(scale_x, 0.0f);
+    glEnd();
+
+    glPopMatrix();
+}
+
 int EngineWindow::Init(const char* title, int width, int height, bool resizeble){
 
     if (!glfwInit()){
@@ -46,17 +61,19 @@ int EngineWindow::Init(const char* title, int width, int height, bool resizeble)
 
     std::cout << width << "x" << height;
 
+    int angle = 0;
+
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         frames++;
         double currentTime = glfwGetTime();
-        if (currentTime - lastTime >= 0.2) {
+        if (currentTime - lastTime >= 0.3) {
             double fps = frames / (currentTime - lastTime);
-            std::string titleWithFPS = std::string(title) + " FPS: " + std::to_string(fps); // 60 fps != 60.000 std::to_string((int)fps)
+            std::string titleWithFPS = std::string(title) + " FPS: " + std::to_string((int)fps); // 60 fps != 60.000 std::to_string((int)fps)
             glfwSetWindowTitle(window, titleWithFPS.c_str());
-            std::cout << "FPS: " << fps << std::endl; // 60 fps != 60.000 (int)fps
+            std::cout << "FPS: " << (int)fps << std::endl; // 60 fps != 60.000 (int)fps
             frames = 0;
             lastTime = currentTime;
         }
@@ -64,6 +81,9 @@ int EngineWindow::Init(const char* title, int width, int height, bool resizeble)
         for (auto obj : objects) {
             obj->draw();
         }
+
+        angle += 1;
+        drawRect2(width/2, height/2, 100, 100, 1.0f, 0.5f, 0.0f, angle);
 
         glfwPollEvents();
 
