@@ -14,5 +14,5 @@ public:
 
     int width, height;
 
-    int Init(const char* title = "VEngine window 500x500", int width = 500, int height = 500);
+    int Init(const char* title = "VEngine window 500x500", int width = 500, int height = 500, bool resizeble = true);
 };

@@ -7,10 +7,17 @@
 #include <cmath>
 //#include <sstream>
 
-int EngineWindow::Init(const char* title, int width, int height){
+int EngineWindow::Init(const char* title, int width, int height, bool resizeble){
 
     if (!glfwInit()){
         std::cerr << "Error init window" << std::endl;
+    }
+
+    if (resizeble == true){
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+    }
+    else {
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     }
 
     GLFWwindow* window = glfwCreateWindow(width, height, title, nullptr, nullptr);
@@ -28,8 +35,8 @@ int EngineWindow::Init(const char* title, int width, int height){
     double lastTime = glfwGetTime();
     int frames = 0;
 
-    GLFWcursor* cursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
-    glfwSetCursor(window, cursor);
+    //GLFWcursor* cursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
+    //glfwSetCursor(window, cursor);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
