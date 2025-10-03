@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
@@ -17,6 +18,8 @@ file(GLOB_RECURSE SOURCES
     core/profiler/*.cpp
     core/window/*.cpp
     core/*.cpp
+
+    core/*.h
 
     core/grphics/*.hpp
     core/input/*.hpp
