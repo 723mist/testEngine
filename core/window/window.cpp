@@ -30,7 +30,7 @@ int EngineWindow::InitWindow(const char* title, int width, int height, bool resi
     glMatrixMode(GL_MODELVIEW);
 
     while (!glfwWindowShouldClose(window)) {
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
 
